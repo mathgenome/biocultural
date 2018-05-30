@@ -16,4 +16,3 @@ The script biocultural.R contains functions to calculate taxa specificity, cultu
 
 Manna, S., Ray, D., Roy, A., 2014. Tribal relation to spatio-temporal variation of wild mushrooms in eastern lateritic part of India. Ethnobotany Research & Applications 12, 015–024.
 
-### Tutorial
