@@ -1,0 +1,85 @@
+---
+title: 'Tutorial: functions for biocultural complexity'
+author: "M. Humberto Reyes-Valdés"
+date: "2/6/2019"
+output: pdf_document
+classoption: landscape
+---
+
+This tutorial shows the use of the functions coded in the script *biocultural.R*, to analyzie biocultural complexity from a table of cultures and species usage. In this case, I use the file *toyset.csv*, which is an artificial simple data set. The platform and language is R.
+
+1. Open an R console
+
+2. Read the data set
+
+
+```{r}
+dat<-read.csv("data/toyset.csv",head=T)
+```
+
+3. Visualize data features
+
+```{r}
+dat
+#rep is the representation frequency of cultural groups. 
+#In this case the assumption is that all groups are equally represented,
+#and one can write 1 for each entry. 
+#culture is the column of cultural group names
+#sp1 to sp5 are species names, with columns
+#representing the observed field counts
+str(dat)
+```
+
+4. Source script
+
+```{r}
+source("biocultural.R")
+```
+
+5. The function bc.info creates an object with basic estimated biocultural parameters
+
+```{r}
+ob.sim<-bc.info(dat)
+names(ob.sim)
+```
+
+6. A more complete and practical function is *bc.tables*, which performs bootstrap for bias correction, and estimates standard errors and confidence intervals. Definitions for table columns are in the respective paper (in review).
+
+```{r}
+#Run bc.tables with 1000 bootstrap resamplings
+set.seed(123)
+x<-bc.tables(dat,1000)
+names(x)
+```
+
+7. Display table for species
+
+```{r}
+library(knitr)
+kable(x$tabSpecies)
+```
+
+8. Display table for cultural groups
+```{r}
+kable(x$tabCultures)
+```
+
+9. Display a table for Biocultural Complexity and Relative Biocultural Complexity , and another one with confidence intervals (see See Bryan FJ Manly, Randomization, Bootstrap and Monte Carlo methods in Biology, 2006, page 44).
+
+```{r}
+#Biocultural Complexity and its relative counterpart
+kable(x$tabBC)
+#Confidence intervals
+kable(x$taBC_CI_2)
+#Note: the attribute taBC_CI_1 contains a table with confidence intervals, 
+#based solely on quantiles. 
+#taBC_CI_2 gives intervals by the second method described by Manly (2006), 
+#which appears to work better for this application.
+```
+
+
+10. Perform a chi square test for association between cultures and species. A montecarlo simulation is used to get the *p* value.
+
+```{r}
+chisq.test(dat[-c(1,2)],simulate.p.value=T)
+```
